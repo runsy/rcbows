@@ -31,3 +31,6 @@ rcbows.register_bow("farbows:bow_wood", {
 	arrow = "farbows:e_arrow",
 })
 ```
+
+## License
+GPLv3
