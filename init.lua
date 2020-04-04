@@ -150,11 +150,11 @@ local DEFAULT_GAIN = 0.5
 
 function rcbows.make_sound(dest_type, dest, soundfile, gain, max_hear_distance)
 	if dest_type == "object" then
-		minetest.sound_play(soundfile, {object = dest, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or mokapi.consts.DEFAULT_MAX_HEAR_DISTANCE,})
+		minetest.sound_play(soundfile, {object = dest, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or DEFAULT_MAX_HEAR_DISTANCE,})
 	 elseif dest_type == "player" then
 		local player_name = dest:get_player_name()
-		minetest.sound_play(soundfile, {to_player = player_name, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or mokapi.consts.DEFAULT_MAX_HEAR_DISTANCE,})
+		minetest.sound_play(soundfile, {to_player = player_name, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or DEFAULT_MAX_HEAR_DISTANCE,})
 	 elseif dest_type == "pos" then
-		minetest.sound_play(soundfile, {pos = dest, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or mokapi.consts.DEFAULT_MAX_HEAR_DISTANCE,})
+		minetest.sound_play(soundfile, {pos = dest, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or DEFAULT_MAX_HEAR_DISTANCE,})
 	end
 end
