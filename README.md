@@ -32,5 +32,33 @@ rcbows.register_bow("farbows:bow_wood", {
 })
 ```
 
+## Audio
+
+1. If you define ``sounds={}``, you get the default sounds for draw bow and fire arrow.
+
+For no sound at all do not declare 'sounds'.
+
+Also you can set the sound parameters 'max_hear_distance' and 'gain'.
+
+In example:
+```
+sounds = {
+	max_hear_distance = 10,
+	gain = 0.4,
+}
+```
+
+2. You also can define your own soundfiles.
+
+In example:
+```
+sounds = {
+	soundfile_draw_bow = "my_draw_bow"
+	soundfile_fire_arrow = "my_fire_arrow"
+	max_hear_distance = 5,
+	--set the gain by default (0.5)
+}
+```
+
 ## License
 GPLv3

@@ -29,6 +29,13 @@ function rcbows.register_bow(name, def)
 		local inventory_arrow_name = minetest.registered_entities[def.arrow].inventory_arrow_name or ""
 		if not inv:remove_item("main", inventory_arrow_name):is_empty() then
 			itemstack:set_name(name .. "_charged")
+			if def.sounds then
+				local user_pos = user:get_pos()
+				if not def.sounds.soundfile_draw_bow then
+					def.sounds.soundfile_draw_bow = "rcbows_draw_bow"
+				end
+				rcbows.make_sound("pos", user_pos, def.sounds.soundfile_draw_bow, gain, max_hear_distance)
+			end
 			return itemstack
 		end
 	end
@@ -57,6 +64,13 @@ function rcbows.register_bow(name, def)
 		on_use = function(itemstack, user, pointed_thing)
 			if not rcbows.spawn_arrow(user, def.strength, def.arrow) then
 				return -- something failed
+			end
+			if def.sounds then
+				local user_pos = user:get_pos()
+				if not def.sounds.soundfile_fire_arrow then
+					def.sounds.soundfile_fire_arrow = "rcbows_fire_arrow"
+				end
+				rcbows.make_sound("pos", pos, def.sounds.soundfile_fire_arrow, gain, max_hear_distance)
 			end
 			itemstack:set_name(name)
 			itemstack:set_wear(itemstack:get_wear() + 0x10000 / def.uses)
@@ -120,4 +134,18 @@ function rcbows.register_arrow(name, def)
 		description = def.inventory_arrow.description,
 		inventory_image = def.inventory_arrow.inventory_image,
 	})
+end
+
+local DEFAULT_MAX_HEAR_DISTANCE = 10
+local DEFAULT_GAIN = 0.5
+
+function rcbows.make_sound(dest_type, dest, soundfile, gain, max_hear_distance)
+	if dest_type == "object" then
+		minetest.sound_play(soundfile, {object = dest, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or mokapi.consts.DEFAULT_MAX_HEAR_DISTANCE,})
+	 elseif dest_type == "player" then
+		local player_name = dest:get_player_name()
+		minetest.sound_play(soundfile, {to_player = player_name, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or mokapi.consts.DEFAULT_MAX_HEAR_DISTANCE,})
+	 elseif dest_type == "pos" then
+		minetest.sound_play(soundfile, {pos = dest, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or mokapi.consts.DEFAULT_MAX_HEAR_DISTANCE,})
+	end
 end
