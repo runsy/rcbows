@@ -55,10 +55,8 @@ In example:
 sounds = {
 	soundfile_draw_bow = "my_draw_bow"
 	soundfile_fire_arrow = "my_fire_arrow"
+	soundfile_hit_arrow = "my_hit_arrow"
 	max_hear_distance = 5,
 	--set the gain by default (0.5)
 }
 ```
-
-## License
-GPLv3

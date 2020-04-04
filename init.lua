@@ -114,6 +114,15 @@ function rcbows.register_arrow(name, def)
 						})
 						self.waiting_for_removal = true
 						self.object:remove()
+						if def.sounds then
+							local thing_pos = thing.ref:get_pos()
+							if not def.sounds.soundfile_hit_arrow then
+								def.sounds.soundfile_hit_arrow = "rcbows_hit_arrow"
+							end
+							if thing_pos then
+								rcbows.make_sound("pos", thing_pos, def.sounds.soundfile_hit_arrow, gain, max_hear_distance)
+							end
+						end
 						return
 					end
 				elseif thing.type == "node" then
