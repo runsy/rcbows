@@ -34,7 +34,7 @@ rcbows.register_bow("farbows:bow_wood", {
 
 ## Audio
 
-1. If you define ``sounds={}``, you get the default sounds for draw bow and fire arrow.
+1. If you define ``sounds={}``, you get the default sounds.
 
 For no sound at all do not declare 'sounds'.
 
