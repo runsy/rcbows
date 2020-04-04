@@ -11,7 +11,7 @@ GPLv3.0
 - http://soundbible.com/1780-Bow-Fire-Arrow.html
 - License: Noncommercial 3.0
 
-### Fire Arrow
+### Draw Bow
 - farbows_draw_bow.ogg
 - http://soundbible.com/2107-Drawing-Bow-Back.html
 - License: Noncommercial 3.0
