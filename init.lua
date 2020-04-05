@@ -128,13 +128,19 @@ function rcbows.register_arrow(name, def)
 				elseif thing.type == "node" then
 					local name = minetest.get_node(thing.under).name
 					if minetest.registered_items[name].walkable then
-						minetest.item_drop(ItemStack(def.inventory_arrow), nil, vector.round(self.old_pos))
+						minetest.item_drop(ItemStack(def.drop or def.inventory_arrow), nil, vector.round(self.old_pos))
 						self.waiting_for_removal = true
 						self.object:remove()
+						if def.effects and def.effects.replace_node then
+							minetest.set_node(self.old_pos, {name = def.effects.replace_node})
+						end
 						return
 					end
 				end
 				thing = cast:next()
+			end
+			if def.effects and def.effects.trail_particle then
+				rcbows.trail(self.old_pos, pos, def.effects.trail_particle)
 			end
 			self.old_pos = pos
 		end,
@@ -157,4 +163,25 @@ function rcbows.make_sound(dest_type, dest, soundfile, gain, max_hear_distance)
 	 elseif dest_type == "pos" then
 		minetest.sound_play(soundfile, {pos = dest, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or DEFAULT_MAX_HEAR_DISTANCE,})
 	end
+end
+
+function rcbows.trail(old_pos, pos, trail_particle)
+    minetest.add_particlespawner({
+        texture = trail_particle,
+        amount = 20,
+        time = 0.2,
+        minpos = old_pos,
+        maxpos = pos,
+        --minvel = {x=1, y=0, z=1},
+        --maxvel = {x=1, y=0, z=1},
+        --minacc = {x=1, y=0, z=1},
+        --maxacc = {x=1, y=0, z=1},
+        minexptime = 0.2,
+        maxexptime = 0.5,
+        minsize = 0.5,
+        maxsize = 1.5,
+        collisiondetection = false,
+        vertical = false,
+        glow = 14
+    })
 end
