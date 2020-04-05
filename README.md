@@ -64,3 +64,43 @@ sounds = {
 	--set the gain by default (0.5)
 }
 ```
+
+## Drop
+
+By default the arrow drops the inventory_arrow when reachs a solid node.
+
+If you want to define another item to drop, define it with 'drop':
+```
+rcbows.register_arrow("farbows:e_arrow", {
+	projectile_texture = "farbows_proyectile_arrow",
+	damage = 5,
+	inventory_arrow = {
+		name = "farbows:inv_arrow",
+		description = S("Arrow"),
+		inventory_image = "farbows_arrow.png",
+	}
+	drop = "farbows_drop_arrow"
+})
+```
+
+## Arrow Effects
+You can define some arrow effects
+- replace_node : Replace the hit node for this one.
+- trail_particle : Particle texture to create an arrow trail.
+In example:
+```
+rcbows.register_arrow("farbows:fire_arrow", {
+	projectile_texture = "farbows_proyectile_arrow",
+	damage = 7,
+	inventory_arrow = {
+		name = "farbows:inv_fire_arrow",
+		description = S("Fire Arrow"),
+		inventory_image = "farbows_arrow_fire.png",
+	},
+	drop = "farbows:inv_arrow",
+	effects = {
+		replace_node = "fire:basic_flame",
+		trail_particle = "farbows_particle_fire.png",
+	}
+})
+```
