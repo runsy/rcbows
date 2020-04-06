@@ -137,12 +137,17 @@ function rcbows.register_arrow(name, def)
 						if not self.liquidflag then
 							self.liquidflag = true
 							local liquidviscosity = minetest.registered_nodes[name]["liquid_viscosity"]
-							local drag = 1/(liquidviscosity*5)
+							local drag = 1/(liquidviscosity*6)
 							self.object:set_velocity(vector.multiply(velocity, drag))
+							self.object:set_acceleration({x = 0, y = -1.0, z = 0})
 						end
 					elseif self.liquidflag then
+						--minetest.chat_send_player("singleplayer", "test")
 						self.liquidflag = false
-						self.object:set_velocity(self.velocity)
+						if self.velocity then
+							self.object:set_velocity(self.velocity)
+						end
+						self.object:set_acceleration({x = 0, y = -9.81, z = 0})
 					end
 					if minetest.registered_items[name].walkable then
 						minetest.item_drop(ItemStack(def.drop or def.inventory_arrow), nil, vector.round(self.old_pos))
