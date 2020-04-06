@@ -7,14 +7,16 @@ function rcbows.spawn_arrow(user, strength, arrow)
 	pos.y = pos.y + 1.5 -- camera offset
 	local dir = user:get_look_dir()
 	local yaw = user:get_look_horizontal()
-
 	local obj = minetest.add_entity(pos, arrow)
 	if not obj then
 		return
 	end
-	obj:get_luaentity().shooter_name = user:get_player_name()
+	local lua_ent = obj:get_luaentity()
+	lua_ent.shooter_name = user:get_player_name()
 	obj:set_yaw(yaw - 0.5 * math.pi)
-	obj:set_velocity(vector.multiply(dir, strength))
+	local velocity = vector.multiply(dir, strength)
+	obj:set_velocity(velocity)
+	lua_ent.velocity = velocity
 	return true
 end
 
@@ -85,9 +87,11 @@ function rcbows.register_arrow(name, def)
 		physical = false, -- use Raycast
 		collisionbox = {-0.1, -0.1, -0.1, 0.1, 0.1, 0.1},
 		visual = "wielditem",
-		textures = {def.projectile_texture},
+		textures = {def.inventory_arrow.name},
 		visual_size = {x = 0.2, y = 0.15},
 		old_pos = nil,
+		velocity = nil,
+		liquidflag = nil,
 		shooter_name = "",
 		waiting_for_removal = false,
 		inventory_arrow_name = def.inventory_arrow.name,
@@ -103,7 +107,8 @@ function rcbows.register_arrow(name, def)
 			end
 			local pos = self.object:get_pos()
 			self.old_pos = self.old_pos or pos
-			local cast = minetest.raycast(self.old_pos, pos, true, false)
+			local velocity = self.object:get_velocity()
+			local cast = minetest.raycast(self.old_pos, pos, true, true)
 			local thing = cast:next()
 			while thing do
 				if thing.type == "object" and thing.ref ~= self.object then
@@ -127,6 +132,18 @@ function rcbows.register_arrow(name, def)
 					end
 				elseif thing.type == "node" then
 					local name = minetest.get_node(thing.under).name
+					local drawtype = minetest.registered_nodes[name]["drawtype"]
+					if drawtype == 'liquid' then
+						if not self.liquidflag then
+							self.liquidflag = true
+							local liquidviscosity = minetest.registered_nodes[name]["liquid_viscosity"]
+							local drag = 1/(liquidviscosity*40)
+							self.object:set_velocity(vector.multiply(velocity, drag))
+						end
+					elseif self.liquidflag then
+						self.liquidflag = false
+						self.object:set_velocity(self.velocity)
+					end
 					if minetest.registered_items[name].walkable then
 						minetest.item_drop(ItemStack(def.drop or def.inventory_arrow), nil, vector.round(self.old_pos))
 						self.waiting_for_removal = true

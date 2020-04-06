@@ -4,7 +4,6 @@
 Example:
 ```
 rcbows.register_arrow("farbows:e_arrow", {
-	projectile_texture = "farbows_proyectile_arrow",
 	damage = 5,
 	inventory_arrow = {
 		name = "farbows:inv_arrow",
@@ -72,7 +71,6 @@ By default the arrow drops the inventory_arrow when reachs a solid node.
 If you want to define another item to drop, define it with 'drop':
 ```
 rcbows.register_arrow("farbows:e_arrow", {
-	projectile_texture = "farbows_proyectile_arrow",
 	damage = 5,
 	inventory_arrow = {
 		name = "farbows:inv_arrow",
@@ -90,7 +88,6 @@ You can define some arrow effects
 In example:
 ```
 rcbows.register_arrow("farbows:fire_arrow", {
-	projectile_texture = "farbows_proyectile_arrow",
 	damage = 7,
 	inventory_arrow = {
 		name = "farbows:inv_fire_arrow",
