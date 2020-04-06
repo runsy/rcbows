@@ -137,7 +137,7 @@ function rcbows.register_arrow(name, def)
 						if not self.liquidflag then
 							self.liquidflag = true
 							local liquidviscosity = minetest.registered_nodes[name]["liquid_viscosity"]
-							local drag = 1/(liquidviscosity*4)
+							local drag = 1/(liquidviscosity*5)
 							self.object:set_velocity(vector.multiply(velocity, drag))
 						end
 					elseif self.liquidflag then
