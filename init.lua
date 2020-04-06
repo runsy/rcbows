@@ -16,7 +16,6 @@ function rcbows.spawn_arrow(user, strength, arrow)
 	obj:set_yaw(yaw - 0.5 * math.pi)
 	local velocity = vector.multiply(dir, strength)
 	obj:set_velocity(velocity)
-	lua_ent.velocity = velocity
 	return true
 end
 
@@ -135,6 +134,7 @@ function rcbows.register_arrow(name, def)
 					local drawtype = minetest.registered_nodes[name]["drawtype"]
 					if drawtype == 'liquid' then
 						if not self.liquidflag then
+							self.velocity = velocity
 							self.liquidflag = true
 							local liquidviscosity = minetest.registered_nodes[name]["liquid_viscosity"]
 							local drag = 1/(liquidviscosity*6)
@@ -142,7 +142,6 @@ function rcbows.register_arrow(name, def)
 							self.object:set_acceleration({x = 0, y = -1.0, z = 0})
 						end
 					elseif self.liquidflag then
-						--minetest.chat_send_player("singleplayer", "test")
 						self.liquidflag = false
 						if self.velocity then
 							self.object:set_velocity(self.velocity)
