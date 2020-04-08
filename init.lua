@@ -63,6 +63,7 @@ function rcbows.register_bow(name, def)
 				end
 				rcbows.make_sound("pos", user_pos, def.sounds.soundfile_draw_bow, gain, max_hear_distance)
 			end
+			return itemstack
 		end
 	end
 
