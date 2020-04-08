@@ -27,13 +27,23 @@ rcbows.register_bow("farbows:bow_wood", {
 	},
 	overlay_empty = "farbows_overlay_empty.png",
 	overlay_charged = "farbows_overlay_charged.png",
-	arrow = "farbows:e_arrow",
+	arrows = "farbows:e_arrow",
 	sounds = {
 		max_hear_distance = 10,
 		gain = 0.4,
 	}
 })
 ```
+
+You can define "arrows" as a single arrow (string) or a table of arrows.
+
+In this case the order matters. The first ones have preference over the last ones when charging the bow.
+
+I.e:
+```
+arrows = {"farbows:e_arrow", ""farbows:ice_arrow""},
+```
+
 
 ## Audio
 

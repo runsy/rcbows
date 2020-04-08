@@ -2,12 +2,17 @@ rcbows = {}
 
 local S = minetest.get_translator(minetest.get_current_modname())
 
-function rcbows.spawn_arrow(user, strength, arrow)
+function rcbows.spawn_arrow(user, strength, itemstack)
 	local pos = user:get_pos()
 	pos.y = pos.y + 1.5 -- camera offset
 	local dir = user:get_look_dir()
 	local yaw = user:get_look_horizontal()
-	local obj = minetest.add_entity(pos, arrow)
+	local meta = itemstack:get_meta()
+	local arrow = meta:get_string("farbows:charged_arrow")
+	local obj = nil
+	if pos and arrow then
+		obj = minetest.add_entity(pos, arrow)
+	end
 	if not obj then
 		return
 	end
@@ -27,8 +32,25 @@ function rcbows.register_bow(name, def)
 
 	local function reload_bow(itemstack, user)
 		local inv = user:get_inventory()
-		local inventory_arrow_name = minetest.registered_entities[def.arrow].inventory_arrow_name or ""
-		if not inv:remove_item("main", inventory_arrow_name):is_empty() then
+		local arrow, inventory_arrow
+		if type(def.arrows) == 'table' then --more than one arrow?
+			for i = 1, #def.arrows do
+				arrow = def.arrows[i]
+				inventory_arrow = minetest.registered_entities[arrow].inventory_arrow_name
+				if inv:contains_item("main", inventory_arrow) then
+					break
+				end
+			end
+		else
+			arrow = def.arrows
+			inventory_arrow = minetest.registered_entities[def.arrows].inventory_arrow_name
+		end
+		if not inventory_arrow then
+			return
+		end
+		if not inv:remove_item("main", inventory_arrow):is_empty() then
+			local meta = itemstack:get_meta()
+			meta:set_string("farbows:charged_arrow", arrow) --save the arrow in the meta
 			itemstack:set_name(name .. "_charged")
 			if def.sounds then
 				local user_pos = user:get_pos()
@@ -63,7 +85,7 @@ function rcbows.register_bow(name, def)
 		groups = {not_in_creative_inventory=1},
 
 		on_use = function(itemstack, user, pointed_thing)
-			if not rcbows.spawn_arrow(user, def.strength, def.arrow) then
+			if not rcbows.spawn_arrow(user, def.strength, itemstack) then
 				return -- something failed
 			end
 			if def.sounds then
@@ -140,6 +162,7 @@ function rcbows.register_arrow(name, def)
 							local drag = 1/(liquidviscosity*6)
 							self.object:set_velocity(vector.multiply(velocity, drag))
 							self.object:set_acceleration({x = 0, y = -1.0, z = 0})
+							rcbows.splash(self.old_pos, "bubble.png")
 						end
 					elseif self.liquidflag then
 						self.liquidflag = false
@@ -172,6 +195,8 @@ function rcbows.register_arrow(name, def)
 	})
 end
 
+--SOUND SYSTEM
+
 local DEFAULT_MAX_HEAR_DISTANCE = 10
 local DEFAULT_GAIN = 0.5
 
@@ -185,6 +210,8 @@ function rcbows.make_sound(dest_type, dest, soundfile, gain, max_hear_distance)
 		minetest.sound_play(soundfile, {pos = dest, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or DEFAULT_MAX_HEAR_DISTANCE,})
 	end
 end
+
+--PARTICLES EFFECTS
 
 function rcbows.trail(old_pos, pos, trail_particle)
     minetest.add_particlespawner({
@@ -205,4 +232,25 @@ function rcbows.trail(old_pos, pos, trail_particle)
         vertical = false,
         glow = 14
     })
+end
+
+function rcbows.splash(old_pos, splash_particle)
+	minetest.add_particlespawner({
+		amount = 5,
+		time = 1,
+		minpos = old_pos,
+		maxpos = old_pos,
+		minvel = {x=1, y=1, z=0},
+		maxvel = {x=1, y=1, z=0},
+		minacc = {x=1, y=1, z=1},
+		maxacc = {x=1, y=1, z=1},
+		minexptime = 0.2,
+		maxexptime = 0.5,
+		minsize = 1,
+		maxsize = 1,
+		collisiondetection = false,
+		vertical = false,
+		texture = "default_water.png",
+		playername = "singleplayer"
+	})
 end
