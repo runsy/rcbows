@@ -8,7 +8,7 @@ function rcbows.spawn_arrow(user, strength, itemstack)
 	local dir = user:get_look_dir()
 	local yaw = user:get_look_horizontal()
 	local meta = itemstack:get_meta()
-	local arrow = meta:get_string("farbows:charged_arrow")
+	local arrow = meta:get_string("rcbows:charged_arrow")
 	local obj = nil
 	if pos and arrow then
 		obj = minetest.add_entity(pos, arrow)
@@ -49,9 +49,13 @@ function rcbows.register_bow(name, def)
 			return
 		end
 		if not inv:remove_item("main", inventory_arrow):is_empty() then
-			local meta = itemstack:get_meta()
-			meta:set_string("farbows:charged_arrow", arrow) --save the arrow in the meta
-			itemstack:set_name(name .. "_charged")
+			minetest.after(def.charge_time or 0, function(user)
+				local wielded_item = user:get_wielded_item()
+				local meta = wielded_item:get_meta()
+				meta:set_string("rcbows:charged_arrow", arrow) --save the arrow in the meta
+				wielded_item:set_name(name .. "_charged")
+				user:set_wielded_item(wielded_item)
+			end, user)
 			if def.sounds then
 				local user_pos = user:get_pos()
 				if not def.sounds.soundfile_draw_bow then
@@ -59,7 +63,6 @@ function rcbows.register_bow(name, def)
 				end
 				rcbows.make_sound("pos", user_pos, def.sounds.soundfile_draw_bow, gain, max_hear_distance)
 			end
-			return itemstack
 		end
 	end
 

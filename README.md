@@ -20,6 +20,7 @@ rcbows.register_bow("farbows:bow_wood", {
 	image = "farbows_bow_wood.png",
 	strength = 30,
 	uses = 150,
+	charge_time = 0.5,
 	recipe = {
 		{"", "group:wood", "farming:string"},
 		{"group:wood", "", "farming:string"},
