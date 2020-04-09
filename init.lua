@@ -88,7 +88,7 @@ function rcbows.register_bow(name, def)
 
 	minetest.register_tool(name .. "_charged", {
 		description = def.description .. " " .. S("(use to fire)"),
-		inventory_image = def.image .. "^" ..def.overlay_charged,
+		inventory_image = def.base_texture .. "^" ..def.overlay_charged,
 		groups = {not_in_creative_inventory=1},
 
 		on_use = function(itemstack, user, pointed_thing)

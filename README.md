@@ -26,6 +26,7 @@ rcbows.register_bow("farbows:bow_wood", {
 		{"group:wood", "", "farming:string"},
 		{"", "group:wood", "farming:string"},
 	},
+	base_texture = "farbows_base_bow_wood.png",
 	overlay_empty = "farbows_overlay_empty.png",
 	overlay_charged = "farbows_overlay_charged.png",
 	arrows = "farbows:e_arrow",
