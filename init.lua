@@ -49,13 +49,16 @@ function rcbows.register_bow(name, def)
 			return
 		end
 		if not inv:remove_item("main", inventory_arrow):is_empty() then
-			minetest.after(def.charge_time or 0, function(user)
+			minetest.after(def.charge_time or 0, function(user, name)
 				local wielded_item = user:get_wielded_item()
-				local meta = wielded_item:get_meta()
-				meta:set_string("rcbows:charged_arrow", arrow) --save the arrow in the meta
-				wielded_item:set_name(name .. "_charged")
-				user:set_wielded_item(wielded_item)
-			end, user)
+				local wielded_item_name = wielded_item:get_name()
+				if wielded_item_name == name then
+					local meta = wielded_item:get_meta()
+					meta:set_string("rcbows:charged_arrow", arrow) --save the arrow in the meta
+					wielded_item:set_name(name .. "_charged")
+					user:set_wielded_item(wielded_item)
+				end
+			end, user, name)
 			if def.sounds then
 				local user_pos = user:get_pos()
 				if not def.sounds.soundfile_draw_bow then
