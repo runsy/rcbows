@@ -100,7 +100,7 @@ function rcbows.register_bow(name, def)
 				if not def.sounds.soundfile_fire_arrow then
 					def.sounds.soundfile_fire_arrow = "rcbows_fire_arrow"
 				end
-				rcbows.make_sound("pos", pos, def.sounds.soundfile_fire_arrow, gain, max_hear_distance)
+				rcbows.make_sound("pos", user_pos, def.sounds.soundfile_fire_arrow, gain, max_hear_distance)
 			end
 			itemstack:set_name(name)
 			itemstack:set_wear(itemstack:get_wear() + 0x10000 / def.uses)
