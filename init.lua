@@ -2,6 +2,10 @@ rcbows = {}
 
 local S = minetest.get_translator(minetest.get_current_modname())
 
+--CONSTANTS
+local DEFAULT_MAX_HEAR_DISTANCE = 10
+local DEFAULT_GAIN = 0.5
+
 function rcbows.spawn_arrow(user, strength, itemstack)
 	local pos = user:get_pos()
 	pos.y = pos.y + 1.5 -- camera offset
@@ -64,7 +68,7 @@ function rcbows.register_bow(name, def)
 				if not def.sounds.soundfile_draw_bow then
 					def.sounds.soundfile_draw_bow = "rcbows_draw_bow"
 				end
-				rcbows.make_sound("pos", user_pos, def.sounds.soundfile_draw_bow, gain, max_hear_distance)
+				rcbows.make_sound("pos", user_pos, def.sounds.soundfile_draw_bow, DEFAULT_GAIN, DEFAULT_MAX_HEAR_DISTANCE)
 			end
 			return itemstack
 		end
@@ -100,7 +104,7 @@ function rcbows.register_bow(name, def)
 				if not def.sounds.soundfile_fire_arrow then
 					def.sounds.soundfile_fire_arrow = "rcbows_fire_arrow"
 				end
-				rcbows.make_sound("pos", user_pos, def.sounds.soundfile_fire_arrow, gain, max_hear_distance)
+				rcbows.make_sound("pos", user_pos, def.sounds.soundfile_fire_arrow, DEFAULT_GAIN, DEFAULT_MAX_HEAR_DISTANCE)
 			end
 			itemstack:set_name(name)
 			itemstack:set_wear(itemstack:get_wear() + 0x10000 / def.uses)
@@ -182,8 +186,8 @@ function rcbows.register_arrow(name, def)
 						minetest.item_drop(ItemStack(def.drop or def.inventory_arrow), nil, vector.round(self.old_pos))
 						self.waiting_for_removal = true
 						self.object:remove()
-						if def.effects and def.effects.replace_node then
-							minetest.set_node(self.old_pos, {name = def.effects.replace_node})
+						if not(minetest.is_protected(pos, self.shooter_name)) and def.effects and def.effects.replace_node then
+							minetest.set_node(pos, {name = def.effects.replace_node})
 						end
 						return
 					end
@@ -203,9 +207,6 @@ function rcbows.register_arrow(name, def)
 end
 
 --SOUND SYSTEM
-
-local DEFAULT_MAX_HEAR_DISTANCE = 10
-local DEFAULT_GAIN = 0.5
 
 function rcbows.make_sound(dest_type, dest, soundfile, gain, max_hear_distance)
 	if dest_type == "object" then
