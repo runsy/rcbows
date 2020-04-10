@@ -186,7 +186,7 @@ function rcbows.register_arrow(name, def)
 						minetest.item_drop(ItemStack(def.drop or def.inventory_arrow), nil, vector.round(self.old_pos))
 						self.waiting_for_removal = true
 						self.object:remove()
-						if not(minetest.is_protected(pos, self.shooter_name)) and def.effects and def.effects.replace_node then
+						if def.effects and def.effects.replace_node and not(minetest.is_protected(pos, self.shooter_name)) then
 							minetest.set_node(pos, {name = def.effects.replace_node})
 						end
 						return
