@@ -102,7 +102,7 @@ Particle texture to create an arrow trail.
 ### explosion
 It requires "tnt" or "explosion" mods.
 
-It is a table in when to define:
+It is a table in where to define:
 - mod = "tnt" or "explosions",
 - radius
 - damage = It is "damage_radius" for the "tnt" mod or "strength" for "explosions"
