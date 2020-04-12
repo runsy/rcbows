@@ -189,6 +189,16 @@ function rcbows.register_arrow(name, def)
 						if def.effects and def.effects.replace_node and not(minetest.is_protected(pos, self.shooter_name)) then
 							minetest.set_node(pos, {name = def.effects.replace_node})
 						end
+						if def.effects and def.effects.explosion and def.effects.explosion.mod and not(minetest.is_protected(pos, self.shooter_name)) then
+							local mod_name = def.effects.explosion.mod
+							if minetest.get_modpath(mod_name) ~= nil then
+								if mod_name == "tnt" then
+									tnt.boom(pos, {radius = def.effects.explosion.radius, damage_radius = def.effects.explosion.damage})
+								elseif mod_name == "explosions" then
+									explosions.explode(pos, {radius = def.effects.explosion.radius, strength = def.effects.explosion.damage})
+								end
+							end
+						end
 						return
 					end
 				end

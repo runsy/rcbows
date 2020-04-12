@@ -95,8 +95,18 @@ rcbows.register_arrow("farbows:e_arrow", {
 
 ## Arrow Effects
 You can define some arrow effects
-- replace_node : Replace the hit node for this one.
-- trail_particle : Particle texture to create an arrow trail.
+### replace_node
+Replace the hit node for this one.
+### trail_particle
+Particle texture to create an arrow trail.
+### explosion
+It requires "tnt" or "explosion" mods.
+
+It is a table in when to define:
+- mod = "tnt" or "explosions",
+- radius
+- damage = It is "damage_radius" for the "tnt" mod or "strength" for "explosions"
+
 In example:
 ```
 rcbows.register_arrow("farbows:fire_arrow", {
@@ -110,6 +120,11 @@ rcbows.register_arrow("farbows:fire_arrow", {
 	effects = {
 		replace_node = "fire:basic_flame",
 		trail_particle = "farbows_particle_fire.png",
+		explosion = {
+			mod = "tnt",
+			radius= 10,
+			damage = 1,
+		}
 	}
 })
 ```
