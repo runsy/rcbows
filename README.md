@@ -100,7 +100,7 @@ Replace the hit node for this one.
 ### trail_particle
 Particle texture to create an arrow trail.
 ### explosion
-It requires "tnt" or "explosion" mods.
+It requires "tnt" or "explosion" mods as an optional dependency.
 
 It is a table in where to define:
 - mod = "tnt" or "explosions",
