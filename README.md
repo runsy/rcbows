@@ -158,6 +158,7 @@ rcbows.register_arrow("farbows:water_arrow", {
 		trail_particle = "default_water.png",
 		water = {
 			radius = 5,
+			flame_node = "fire:basic_flame",
 			particles = true,
 		},
 	}
