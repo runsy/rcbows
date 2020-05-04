@@ -263,7 +263,7 @@ function rcbows.water_effect(def, pos)
 			rcbows.splash(pos, "rcbows_water.png")
 		end
 		local radius = def.effects.water.radius or 5
-		local flames = minetest.find_nodes_in_area({x=pos.x -radius, y=pos.y -radius, z=pos.z -radius}, {x=pos.x+radius, y=pos.y+radius, z=pos.z+radius}, {"fire:basic_flame"})
+		local flames = minetest.find_nodes_in_area({x=pos.x -radius, y=pos.y -radius, z=pos.z -radius}, {x=pos.x+radius, y=pos.y+radius, z=pos.z+radius}, {def.effects.water.flame_node})
 		if flames and #flames > 0 then
 			for i=1, #flames do
 				minetest.set_node(flames[i], {name="air"})

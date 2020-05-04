@@ -140,6 +140,7 @@ An effect that extinguishes the flames.
 It requires "fire" mod as an optional dependency.
 
 It is a table in where to define:
+- flame_node = The name of the flame node to extinguish
 - radius
 - particles = A water particles effect [optional]
 
