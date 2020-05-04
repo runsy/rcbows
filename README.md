@@ -112,6 +112,7 @@ It is a table in where to define:
 - radius
 - damage = It is "damage_radius" for the "tnt" mod or "strength" for "explosions"
 
+
 In example:
 ```
 rcbows.register_arrow("farbows:fire_arrow", {
@@ -130,6 +131,34 @@ rcbows.register_arrow("farbows:fire_arrow", {
 			radius= 10,
 			damage = 1,
 		}
+	}
+})
+```
+### water
+An effect that extinguishes the flames.
+
+It requires "fire" mod as an optional dependency.
+
+It is a table in where to define:
+- radius
+- particles = A water particles effect [optional]
+
+```
+rcbows.register_arrow("farbows:water_arrow", {
+	projectile_texture = "farbows_water_arrow",
+	damage = 2,
+	inventory_arrow = {
+		name = "farbows:inv_water_arrow",
+		description = S("Water Arrow"),
+		inventory_image = "farbows_arrow_water.png",
+	},
+	drop = "bucket:bucket_empty",
+	effects = {
+		trail_particle = "default_water.png",
+		water = {
+			radius = 5,
+			particles = true,
+		},
 	}
 })
 ```
