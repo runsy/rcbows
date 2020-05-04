@@ -160,19 +160,11 @@ function rcbows.register_arrow(name, def)
 								rcbows.make_sound("pos", thing_pos, def.sounds.soundfile_hit_arrow, gain, max_hear_distance)
 							end
 						end
-<<<<<<< HEAD
 
 						-- no effects or not owner, nothing to do.
 						-- some effects should also happen if hitting an other object. like tnt, water etc.
 						if not def.effects and minetest.is_protected(pos, self.shooter_name) then return end
 
-=======
-	                         
-						-- no effects or not owner, nothing to do.
-						-- some effects should also happen if hitting an other object. like tnt, water etc.
-						if not def.effects and minetest.is_protected(pos, self.shooter_name) then return end
-	                         
->>>>>>> 4f1c653f07d551c3f1612028dd65d01cf5b7b67c
 						-- BOOM
 						if def.effects.explosion and def.effects.explosion.mod then
 							local mod_name = def.effects.explosion.mod
@@ -184,11 +176,7 @@ function rcbows.register_arrow(name, def)
 								end
 							end
 						end
-<<<<<<< HEAD
 
-=======
-						
->>>>>>> 4f1c653f07d551c3f1612028dd65d01cf5b7b67c
 						-- water - extinguish fires
 						if def.effects.water then
 							local radius = def.effects.water.radius or 5
@@ -199,13 +187,8 @@ function rcbows.register_arrow(name, def)
 									minetest.set_node(flames[f], {name="air"})
 								end
 							end
-<<<<<<< HEAD
 						end
 
-=======
-						end      
-	                                
->>>>>>> 4f1c653f07d551c3f1612028dd65d01cf5b7b67c
 						return
 					end
 				elseif thing.type == "node" then
@@ -234,26 +217,15 @@ function rcbows.register_arrow(name, def)
 						end
 						self.waiting_for_removal = true
 						self.object:remove()
-<<<<<<< HEAD
 
 						-- no effects or not owner, nothing to do.
 						if not def.effects and minetest.is_protected(pos, self.shooter_name) then return end
 
-=======
-	                                
-						-- no effects or not owner, nothing to do.
-						if not def.effects and minetest.is_protected(pos, self.shooter_name) then return end
-	                         
->>>>>>> 4f1c653f07d551c3f1612028dd65d01cf5b7b67c
 						--replace node
 						if def.effects.replace_node then
 							minetest.set_node(pos, {name = def.effects.replace_node})
 						end
-<<<<<<< HEAD
 
-=======
-	                         
->>>>>>> 4f1c653f07d551c3f1612028dd65d01cf5b7b67c
 						-- BOOM
 						if def.effects.explosion and def.effects.explosion.mod then
 							local mod_name = def.effects.explosion.mod
@@ -265,11 +237,7 @@ function rcbows.register_arrow(name, def)
 								end
 							end
 						end
-<<<<<<< HEAD
 
-=======
-						
->>>>>>> 4f1c653f07d551c3f1612028dd65d01cf5b7b67c
 						-- water - extinguish fires
 						if def.effects.water then
 							local radius = def.effects.water.radius or 5
