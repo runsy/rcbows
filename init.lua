@@ -160,6 +160,35 @@ function rcbows.register_arrow(name, def)
 								rcbows.make_sound("pos", thing_pos, def.sounds.soundfile_hit_arrow, gain, max_hear_distance)
 							end
 						end
+
+						-- no effects or not owner, nothing to do.
+						-- some effects should also happen if hitting an other object. like tnt, water etc.
+						if not def.effects and minetest.is_protected(pos, self.shooter_name) then return end
+
+						-- BOOM
+						if def.effects.explosion and def.effects.explosion.mod then
+							local mod_name = def.effects.explosion.mod
+							if minetest.get_modpath(mod_name) ~= nil then
+								if mod_name == "tnt" then
+									tnt.boom(pos, {radius = def.effects.explosion.radius, damage_radius = def.effects.explosion.damage})
+								elseif mod_name == "explosions" then
+									explosions.explode(pos, {radius = def.effects.explosion.radius, strength = def.effects.explosion.damage})
+								end
+							end
+						end
+
+						-- water - extinguish fires
+						if def.effects.water then
+							local radius = def.effects.water.radius or 5
+							local flames = minetest.find_nodes_in_area({x=pos.x -radius, y=pos.y -radius, z=pos.z -radius},
+																{x=pos.x+radius, y=pos.y+radius, z=pos.z+radius}, {"fire:basic_flame"})
+							if flames and #flames > 0 then
+								for f=1,#flames do
+									minetest.set_node(flames[f], {name="air"})
+								end
+							end
+						end
+
 						return
 					end
 				elseif thing.type == "node" then
@@ -188,16 +217,35 @@ function rcbows.register_arrow(name, def)
 						end
 						self.waiting_for_removal = true
 						self.object:remove()
-						if def.effects and def.effects.replace_node and not(minetest.is_protected(pos, self.shooter_name)) then
+
+						-- no effects or not owner, nothing to do.
+						if not def.effects and minetest.is_protected(pos, self.shooter_name) then return end
+
+						--replace node
+						if def.effects.replace_node then
 							minetest.set_node(pos, {name = def.effects.replace_node})
 						end
-						if def.effects and def.effects.explosion and def.effects.explosion.mod and not(minetest.is_protected(pos, self.shooter_name)) then
+
+						-- BOOM
+						if def.effects.explosion and def.effects.explosion.mod then
 							local mod_name = def.effects.explosion.mod
 							if minetest.get_modpath(mod_name) ~= nil then
 								if mod_name == "tnt" then
 									tnt.boom(pos, {radius = def.effects.explosion.radius, damage_radius = def.effects.explosion.damage})
 								elseif mod_name == "explosions" then
 									explosions.explode(pos, {radius = def.effects.explosion.radius, strength = def.effects.explosion.damage})
+								end
+							end
+						end
+
+						-- water - extinguish fires
+						if def.effects.water then
+							local radius = def.effects.water.radius or 5
+							local flames = minetest.find_nodes_in_area({x=pos.x -radius, y=pos.y -radius, z=pos.z -radius},
+																{x=pos.x+radius, y=pos.y+radius, z=pos.z+radius}, {"fire:basic_flame"})
+							if flames and #flames > 0 then
+								for f=1,#flames do
+									minetest.set_node(flames[f], {name="air"})
 								end
 							end
 						end

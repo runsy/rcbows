@@ -1,8 +1,9 @@
 # LICENSE
 
-## Code and images
+- Code: GPLv3.0
+- Textures: CC BY-SA 4.0
+- Sounds: They have different licenses, see below.
 
-GPLv3.0
 
 ## Sounds
 
