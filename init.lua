@@ -163,31 +163,12 @@ function rcbows.register_arrow(name, def)
 
 						-- no effects or not owner, nothing to do.
 						-- some effects should also happen if hitting an other object. like tnt, water etc.
-						if not def.effects and minetest.is_protected(pos, self.shooter_name) then return end
-
-						-- BOOM
-						if def.effects.explosion and def.effects.explosion.mod then
-							local mod_name = def.effects.explosion.mod
-							if minetest.get_modpath(mod_name) ~= nil then
-								if mod_name == "tnt" then
-									tnt.boom(pos, {radius = def.effects.explosion.radius, damage_radius = def.effects.explosion.damage})
-								elseif mod_name == "explosions" then
-									explosions.explode(pos, {radius = def.effects.explosion.radius, strength = def.effects.explosion.damage})
-								end
-							end
+						if not def.effects and minetest.is_protected(pos, self.shooter_name) then
+							return
 						end
 
-						-- water - extinguish fires
-						if def.effects.water then
-							local radius = def.effects.water.radius or 5
-							local flames = minetest.find_nodes_in_area({x=pos.x -radius, y=pos.y -radius, z=pos.z -radius},
-																{x=pos.x+radius, y=pos.y+radius, z=pos.z+radius}, {"fire:basic_flame"})
-							if flames and #flames > 0 then
-								for f=1,#flames do
-									minetest.set_node(flames[f], {name="air"})
-								end
-							end
-						end
+						rcbows.boom_effect(def, pos) -- BOOM
+						rcbows.water_effect(def, pos) -- water - extinguish fires
 
 						return
 					end
@@ -202,7 +183,7 @@ function rcbows.register_arrow(name, def)
 							local drag = 1/(liquidviscosity*6)
 							self.object:set_velocity(vector.multiply(velocity, drag))
 							self.object:set_acceleration({x = 0, y = -1.0, z = 0})
-							rcbows.splash(self.old_pos, "bubble.png")
+							rcbows.splash(self.old_pos, "rcbows_bubble.png")
 						end
 					elseif self.liquidflag then
 						self.liquidflag = false
@@ -219,36 +200,18 @@ function rcbows.register_arrow(name, def)
 						self.object:remove()
 
 						-- no effects or not owner, nothing to do.
-						if not def.effects and minetest.is_protected(pos, self.shooter_name) then return end
+						if not def.effects and minetest.is_protected(pos, self.shooter_name) then
+							return
+						end
 
 						--replace node
 						if def.effects.replace_node then
 							minetest.set_node(pos, {name = def.effects.replace_node})
 						end
 
-						-- BOOM
-						if def.effects.explosion and def.effects.explosion.mod then
-							local mod_name = def.effects.explosion.mod
-							if minetest.get_modpath(mod_name) ~= nil then
-								if mod_name == "tnt" then
-									tnt.boom(pos, {radius = def.effects.explosion.radius, damage_radius = def.effects.explosion.damage})
-								elseif mod_name == "explosions" then
-									explosions.explode(pos, {radius = def.effects.explosion.radius, strength = def.effects.explosion.damage})
-								end
-							end
-						end
+						rcbows.boom_effect(def, pos) -- BOOM
+						rcbows.water_effect(def, pos) -- water - extinguish fires
 
-						-- water - extinguish fires
-						if def.effects.water then
-							local radius = def.effects.water.radius or 5
-							local flames = minetest.find_nodes_in_area({x=pos.x -radius, y=pos.y -radius, z=pos.z -radius},
-																{x=pos.x+radius, y=pos.y+radius, z=pos.z+radius}, {"fire:basic_flame"})
-							if flames and #flames > 0 then
-								for f=1,#flames do
-									minetest.set_node(flames[f], {name="air"})
-								end
-							end
-						end
 						return
 					end
 				end
@@ -276,6 +239,39 @@ function rcbows.make_sound(dest_type, dest, soundfile, gain, max_hear_distance)
 		minetest.sound_play(soundfile, {to_player = player_name, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or DEFAULT_MAX_HEAR_DISTANCE,})
 	 elseif dest_type == "pos" then
 		minetest.sound_play(soundfile, {pos = dest, gain = gain or DEFAULT_GAIN, max_hear_distance = max_hear_distance or DEFAULT_MAX_HEAR_DISTANCE,})
+	end
+end
+
+--ARROW EFFECTS
+
+function rcbows.boom_effect(def, pos)
+	if def.effects.explosion and def.effects.explosion.mod then
+		local mod_name = def.effects.explosion.mod
+		if minetest.get_modpath(mod_name) ~= nil then
+			if mod_name == "tnt" then
+				tnt.boom(pos, {radius = def.effects.explosion.radius, damage_radius = def.effects.explosion.damage})
+			elseif mod_name == "explosions" then
+				explosions.explode(pos, {radius = def.effects.explosion.radius, strength = def.effects.explosion.damage})
+			end
+		end
+	end
+end
+
+function rcbows.water_effect(def, pos)
+	if def.effects.water then
+		if def.effects.water.particles then
+			rcbows.splash(pos, "rcbows_water.png")
+		end
+		local radius = def.effects.water.radius or 5
+		local flames = minetest.find_nodes_in_area({x=pos.x -radius, y=pos.y -radius, z=pos.z -radius}, {x=pos.x+radius, y=pos.y+radius, z=pos.z+radius}, {"fire:basic_flame"})
+		if flames and #flames > 0 then
+			for i=1, #flames do
+				minetest.set_node(flames[i], {name="air"})
+				if def.effects.water.particles then
+					rcbows.splash(flames[i], "rcbows_water.png")
+				end
+			end
+		end
 	end
 end
 
@@ -318,7 +314,7 @@ function rcbows.splash(old_pos, splash_particle)
 		maxsize = 1,
 		collisiondetection = false,
 		vertical = false,
-		texture = "default_water.png",
+		texture = splash_particle,
 		playername = "singleplayer"
 	})
 end
