@@ -200,7 +200,7 @@ function rcbows.register_arrow(name, def)
 						self.object:remove()
 
 						-- no effects or not owner, nothing to do.
-						if not def.effects and minetest.is_protected(pos, self.shooter_name) then
+						if not def.effects or minetest.is_protected(pos, self.shooter_name) then
 							return
 						end
 
