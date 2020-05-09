@@ -163,7 +163,7 @@ function rcbows.register_arrow(name, def)
 
 						-- no effects or not owner, nothing to do.
 						-- some effects should also happen if hitting an other object. like tnt, water etc.
-						if not def.effects and minetest.is_protected(pos, self.shooter_name) then
+						if not def.effects or minetest.is_protected(pos, self.shooter_name) then
 							return
 						end
 
