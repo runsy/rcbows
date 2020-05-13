@@ -226,6 +226,7 @@ function rcbows.register_arrow(name, def)
 	minetest.register_craftitem(def.inventory_arrow.name, {
 		description = def.inventory_arrow.description,
 		inventory_image = def.inventory_arrow.inventory_image,
+		stack_max = def.stack_max or 99,
 	})
 end
 
@@ -278,8 +279,16 @@ end
 --PARTICLES EFFECTS
 
 function rcbows.trail(old_pos, pos, trail_particle)
+	local texture, animation
+	if type(trail_particle) == 'table' then
+		texture = trail_particle.texture
+		animation = trail_particle.animation
+	else
+		texture = trail_particle
+		animation = ""
+	end
     minetest.add_particlespawner({
-        texture = trail_particle,
+        texture = texture,
         amount = 20,
         time = 0.2,
         minpos = old_pos,
@@ -294,7 +303,8 @@ function rcbows.trail(old_pos, pos, trail_particle)
         maxsize = 1.5,
         collisiondetection = false,
         vertical = false,
-        glow = 14
+        glow = 14,
+        animation = animation,
     })
 end
 

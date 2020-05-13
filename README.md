@@ -9,6 +9,7 @@ rcbows.register_arrow("farbows:e_arrow", {
 		name = "farbows:inv_arrow",
 		description = S("Arrow"),
 		inventory_image = "farbows_arrow.png",
+		stack_max = 64, --optional, 99 by default
 	}
 })
 ```
@@ -104,6 +105,8 @@ You can define some arrow effects
 Replace the hit node for this one.
 ### trail_particle
 Particle texture to create an arrow trail.
+
+It can be a string with "texture" only, or a table  for animated textures: {texture = "texture", animation = "animation"}.
 ### explosion
 It requires "tnt" or "explosion" mods as an optional dependency.
 
