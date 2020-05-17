@@ -157,7 +157,7 @@ function rcbows.register_arrow(name, def)
 								def.sounds.soundfile_hit_arrow = "rcbows_hit_arrow"
 							end
 							if thing_pos then
-								rcbows.make_sound("pos", thing_pos, def.sounds.soundfile_hit_arrow, gain, max_hear_distance)
+								rcbows.make_sound("pos", thing_pos, def.sounds.soundfile_hit_arrow, DEFAULT_GAIN, DEFAULT_MAX_HEAR_DISTANCE)
 							end
 						end
 
@@ -193,7 +193,7 @@ function rcbows.register_arrow(name, def)
 						self.object:set_acceleration({x = 0, y = -9.81, z = 0})
 					end
 					if minetest.registered_items[name].walkable then
-						if not(no_drop) then
+						if not(def.drop) then
 							minetest.item_drop(ItemStack(def.drop or def.inventory_arrow), nil, vector.round(self.old_pos))
 						end
 						self.waiting_for_removal = true

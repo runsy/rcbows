@@ -96,7 +96,7 @@ rcbows.register_arrow("farbows:e_arrow", {
 
 If you want not any drop at all, add:
 ```
-no_drop = true,
+drop = nil,
 ```
 
 ## Arrow Effects
