@@ -36,21 +36,43 @@ function rcbows.register_bow(name, def)
 
 	local function reload_bow(itemstack, user)
 		local inv = user:get_inventory()
-		local arrow, inventory_arrow
+		local arrow, inventory_arrows, inventory_arrow, inv_arrow_name
+		local inv_list = inv:get_list("main")
 		if type(def.arrows) == 'table' then --more than one arrow?
 			for i = 1, #def.arrows do
 				arrow = def.arrows[i]
-				inventory_arrow = minetest.registered_entities[arrow].inventory_arrow_name
-				if inv:contains_item("main", inventory_arrow) then
-					break
+				inv_arrow_name = minetest.registered_entities[arrow].inventory_arrow_name
+				if inv:contains_item("main", inv_arrow_name) then
+					if not inventory_arrows then
+						inventory_arrows = {}
+					end
+					inventory_arrows[#inventory_arrows+1] = {arrow = arrow, inv_arrow_name = inv_arrow_name}
 				end
 			end
 		else
 			arrow = def.arrows
 			inventory_arrow = minetest.registered_entities[def.arrows].inventory_arrow_name
 		end
-		if not inventory_arrow then
+		if not inventory_arrow and not inventory_arrows then
 			return
+		end
+		if inventory_arrows then --more than one arrow?
+			for i = 1, #inv_list do
+				if inventory_arrow then
+					break
+				end
+				for j = 1, #inventory_arrows do
+					local inv_arrow = inventory_arrows[j]
+					if inv_list[i]:get_name() == inv_arrow.inv_arrow_name then
+						arrow = inv_arrow.arrow
+						inventory_arrow = inv_arrow.inv_arrow_name
+						break
+					end
+				end
+			end
+			if not inventory_arrow then
+				return
+			end
 		end
 		if not inv:remove_item("main", inventory_arrow):is_empty() then
 			minetest.after(def.charge_time or 0, function(user, name)
@@ -127,6 +149,7 @@ function rcbows.register_arrow(name, def)
 		shooter_name = "",
 		waiting_for_removal = false,
 		inventory_arrow_name = def.inventory_arrow.name,
+		groups = {arrow = 1},
 
 		on_activate = function(self)
 			self.object:set_acceleration({x = 0, y = -9.81, z = 0})
