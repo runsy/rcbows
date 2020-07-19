@@ -51,7 +51,7 @@ arrows = {"farbows:e_arrow", ""farbows:ice_arrow""},
 
 ###Viewfinder
 
-You can define a viewfinder for an arrow. This produces a zoom effect.
+You can define a viewfinder for a bow. This produces a zoom effect.
 
 ```
 	viewfinder = {
