@@ -38,7 +38,7 @@ rcbows.register_bow("farbows:bow_wood", {
 })
 ```
 
-###Arrows
+### Arrows
 
 You can define "arrows" as a single arrow (string) or a table of arrows.
 
@@ -49,7 +49,7 @@ I.e:
 arrows = {"farbows:e_arrow", ""farbows:ice_arrow""},
 ```
 
-###Viewfinder
+### Viewfinder
 
 You can define a viewfinder for a bow. This produces a zoom effect.
 
