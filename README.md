@@ -38,6 +38,8 @@ rcbows.register_bow("farbows:bow_wood", {
 })
 ```
 
+###Arrows
+
 You can define "arrows" as a single arrow (string) or a table of arrows.
 
 In this case the order matters. The first ones have preference over the last ones when charging the bow.
@@ -47,6 +49,19 @@ I.e:
 arrows = {"farbows:e_arrow", ""farbows:ice_arrow""},
 ```
 
+###Viewfinder
+
+You can define a viewfinder for an arrow. This produces a zoom effect.
+
+```
+	viewfinder = {
+		zoom = 15, --level of zoom; by default 15.
+		texture = "" --optional
+	}
+```
+
+- When the bow charged, toogle the viewfinder with the secondary use (right-click).
+- You can define an optional texture to being showed. If you define texture as empty (""), you get the default rcbows viewfinder texture.
 
 ## Audio
 

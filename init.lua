@@ -28,6 +28,46 @@ function rcbows.spawn_arrow(user, strength, itemstack)
 	return true
 end
 
+function rcbows.launch_arrow(user, user_pos, name, def, itemstack)
+	if not rcbows.spawn_arrow(user, def.strength, itemstack) then --throw arrow (spawn arrow entity)
+		return -- something failed
+	end
+	if def.sounds then
+		local user_pos = user:get_pos()
+		if not def.sounds.soundfile_fire_arrow then
+			def.sounds.soundfile_fire_arrow = "rcbows_fire_arrow"
+		end
+		rcbows.make_sound("pos", user_pos, def.sounds.soundfile_fire_arrow, DEFAULT_GAIN, DEFAULT_MAX_HEAR_DISTANCE)
+	end
+	itemstack:set_name(name)
+	itemstack:set_wear(itemstack:get_wear() + 0x10000 / def.uses)
+	if def.viewfinder then --reset the viewfinder-zoom
+		if not(user:get_fov() == 0) then
+			user:set_fov(0)
+			remove_viewfinder(user, itemstack:get_meta():get_int( "rcbows:viewfinder_id"))
+		end
+	end
+	return itemstack
+end
+
+local function show_viewfinder(player, texture)
+	local hud_id = player:hud_add({
+		hud_elem_type = "image",
+		text = texture,
+		position = {x=0, y=0},
+		scale = {x=-100, y=-100},
+		alignment = {x=1, y=1},
+		offset = {x=0, y=0}
+	})
+	return hud_id
+end
+
+function remove_viewfinder(player, hud_id)
+	if hud_id then
+		player:hud_remove(hud_id)
+	end
+end
+
 function rcbows.register_bow(name, def)
 	assert(type(def.description) == "string")
 	assert(type(def.image) == "string")
@@ -112,26 +152,38 @@ function rcbows.register_bow(name, def)
 		})
 	end
 
-	minetest.register_tool(name .. "_charged", {
+	local charged_name = name .. "_charged"
+
+	minetest.register_tool(charged_name, {
 		description = def.description .. " " .. S("(use to fire)"),
 		inventory_image = def.base_texture .. "^" ..def.overlay_charged,
 		groups = {not_in_creative_inventory=1},
 
 		on_use = function(itemstack, user, pointed_thing)
-			if not rcbows.spawn_arrow(user, def.strength, itemstack) then
-				return -- something failed
-			end
-			if def.sounds then
-				local user_pos = user:get_pos()
-				if not def.sounds.soundfile_fire_arrow then
-					def.sounds.soundfile_fire_arrow = "rcbows_fire_arrow"
-				end
-				rcbows.make_sound("pos", user_pos, def.sounds.soundfile_fire_arrow, DEFAULT_GAIN, DEFAULT_MAX_HEAR_DISTANCE)
-			end
-			itemstack:set_name(name)
-			itemstack:set_wear(itemstack:get_wear() + 0x10000 / def.uses)
-			return itemstack
+			return rcbows.launch_arrow(user, user_pos, name, def, itemstack)
 		end,
+
+		on_secondary_use = function(itemstack, user, pointed_thing) --viewfinder
+			if not def.viewfinder then
+				return
+			end
+			if user:get_fov() == 0 then
+				user:set_fov(def.viewfinder.zoom or 15)
+				if def.viewfinder.texture then
+					local viewfinder_texture = def.viewfinder.texture
+					if viewfinder_texture == "" then
+						viewfinder_texture = "rcbows_viewfinder.png"
+					end
+					itemstack:get_meta():set_int("rcbows:viewfinder_id", show_viewfinder(user, viewfinder_texture))
+				end
+			else
+				user:set_fov(0)
+				if def.viewfinder.texture then
+					remove_viewfinder(user, itemstack:get_meta():get_int( "rcbows:viewfinder_id"))
+				end
+			end
+			return itemstack
+		end
 	})
 end
 
