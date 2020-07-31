@@ -11,6 +11,10 @@ rcbows.register_arrow("farbows:e_arrow", {
 		inventory_image = "farbows_arrow.png",
 		stack_max = 64, --optional, 99 by default
 	}
+	sounds = {
+		max_hear_distance = 10,
+		gain = 0.4,
+	},
 })
 ```
 ## function rcbows.register_bow(name, def)
@@ -81,11 +85,21 @@ sounds = {
 
 2. You also can define your own soundfiles.
 
-In example:
+You can set "soundfile_draw_bow" and/or "soundfile_fire_arrow" for bows, and "soundfile_hit_arrow" for arrows.
+
+In example for a Bow:
 ```
 sounds = {
 	soundfile_draw_bow = "my_draw_bow"
 	soundfile_fire_arrow = "my_fire_arrow"
+	max_hear_distance = 5,
+	--set the gain by default (0.5)
+}
+```
+
+In example for a Arrow:
+```
+sounds = {
 	soundfile_hit_arrow = "my_hit_arrow"
 	max_hear_distance = 5,
 	--set the gain by default (0.5)
@@ -111,7 +125,7 @@ rcbows.register_arrow("farbows:e_arrow", {
 
 If you want not any drop at all, add:
 ```
-drop = nil,
+drop = "",
 ```
 
 ## Arrow Effects

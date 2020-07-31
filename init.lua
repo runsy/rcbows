@@ -215,6 +215,9 @@ function rcbows.register_arrow(name, def)
 			local pos = self.object:get_pos()
 			self.old_pos = self.old_pos or pos
 			local velocity = self.object:get_velocity()
+			if def.sounds and not(def.sounds.soundfile_hit_arrow) then
+				def.sounds.soundfile_hit_arrow = "rcbows_hit_arrow"
+			end
 			local cast = minetest.raycast(self.old_pos, pos, true, true)
 			local thing = cast:next()
 			while thing do
@@ -228,9 +231,6 @@ function rcbows.register_arrow(name, def)
 						self.object:remove()
 						if def.sounds then
 							local thing_pos = thing.ref:get_pos()
-							if not def.sounds.soundfile_hit_arrow then
-								def.sounds.soundfile_hit_arrow = "rcbows_hit_arrow"
-							end
 							if thing_pos then
 								rcbows.make_sound("pos", thing_pos, def.sounds.soundfile_hit_arrow, DEFAULT_GAIN, DEFAULT_MAX_HEAR_DISTANCE)
 							end
@@ -269,10 +269,20 @@ function rcbows.register_arrow(name, def)
 					end
 					if minetest.registered_items[node_name].walkable then
 						if not(def.drop) then
-							minetest.item_drop(ItemStack(def.drop or def.inventory_arrow), nil, vector.round(self.old_pos))
+							minetest.item_drop(ItemStack(def.inventory_arrow), nil, vector.round(self.old_pos))
+						else
+							if not(def.drop == "") then
+								minetest.item_drop(ItemStack(def.drop), nil, vector.round(self.old_pos))
+							end
 						end
 						self.waiting_for_removal = true
 						self.object:remove()
+
+						if def.sounds then
+							if pos then
+								rcbows.make_sound("pos", pos, def.sounds.soundfile_hit_arrow, DEFAULT_GAIN, DEFAULT_MAX_HEAR_DISTANCE)
+							end
+						end
 
 						-- no effects or not owner, nothing to do.
 						if not def.effects or minetest.is_protected(pos, self.shooter_name) then
