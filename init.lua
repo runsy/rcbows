@@ -222,7 +222,7 @@ function rcbows.register_arrow(name, def)
 					if not thing.ref:is_player() or thing.ref:get_player_name() ~= self.shooter_name then
 						thing.ref:punch(self.object, 1.0, {
 							full_punch_interval = 0.5,
-							damage_groups = {fleshy = def.damage}
+							damage_groups = {fleshy = def.damage or 1}
 						})
 						self.waiting_for_removal = true
 						self.object:remove()
