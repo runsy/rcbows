@@ -28,7 +28,7 @@ function rcbows.spawn_arrow(user, strength, itemstack)
 	return true
 end
 
-function rcbows.launch_arrow(user, user_pos, name, def, itemstack)
+function rcbows.launch_arrow(user, name, def, itemstack)
 	if not rcbows.spawn_arrow(user, def.strength, itemstack) then --throw arrow (spawn arrow entity)
 		return -- something failed
 	end
@@ -74,7 +74,7 @@ function rcbows.register_bow(name, def)
 	assert(type(def.strength) == "number")
 	assert(def.uses > 0)
 
-	local function reload_bow(itemstack, user)
+	local function reload_bow(itemstack, user, pointed_thing)
 		local inv = user:get_inventory()
 		local arrow, inventory_arrows, inventory_arrow, inv_arrow_name
 		local inv_list = inv:get_list("main")
@@ -160,7 +160,7 @@ function rcbows.register_bow(name, def)
 		groups = {not_in_creative_inventory=1},
 
 		on_use = function(itemstack, user, pointed_thing)
-			return rcbows.launch_arrow(user, user_pos, name, def, itemstack)
+			return rcbows.launch_arrow(user, name, def, itemstack)
 		end,
 
 		on_secondary_use = function(itemstack, user, pointed_thing) --viewfinder
