@@ -248,13 +248,13 @@ function rcbows.register_arrow(name, def)
 						return
 					end
 				elseif thing.type == "node" then
-					local name = minetest.get_node(thing.under).name
-					local drawtype = minetest.registered_nodes[name]["drawtype"]
+					local node_name = minetest.get_node(thing.under).name
+					local drawtype = minetest.registered_nodes[node_name]["drawtype"]
 					if drawtype == 'liquid' then
 						if not self.liquidflag then
 							self.velocity = velocity
 							self.liquidflag = true
-							local liquidviscosity = minetest.registered_nodes[name]["liquid_viscosity"]
+							local liquidviscosity = minetest.registered_nodes[node_name]["liquid_viscosity"]
 							local drag = 1/(liquidviscosity*6)
 							self.object:set_velocity(vector.multiply(velocity, drag))
 							self.object:set_acceleration({x = 0, y = -1.0, z = 0})
@@ -267,7 +267,7 @@ function rcbows.register_arrow(name, def)
 						end
 						self.object:set_acceleration({x = 0, y = -9.81, z = 0})
 					end
-					if minetest.registered_items[name].walkable then
+					if minetest.registered_items[node_name].walkable then
 						if not(def.drop) then
 							minetest.item_drop(ItemStack(def.drop or def.inventory_arrow), nil, vector.round(self.old_pos))
 						end
