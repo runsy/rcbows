@@ -3,7 +3,8 @@ allow_defined_top = true
 
 globals = {
     "minetest",
-    "mobkit"
+    "tnt",
+    "explosions"
 }
 
 read_globals = {
